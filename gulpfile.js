@@ -32,7 +32,7 @@ var cmdOptions = parseArgs(process.argv.slice(2), {
 
 gulp.task('default', ['build']);
 
-gulp.task('build', ['clean', 'modules'], function() {
+gulp.task('build', ['clean', 'modules'], function () {
   if (hasOwn.call(cmdOptions, 'name') && cmdOptions.name.length > 0) {
     releaseObjectName = cmdOptions.name;
   }
@@ -61,7 +61,7 @@ gulp.task('build', ['clean', 'modules'], function() {
     .pipe(gulp.dest(distDir));
 });
 
-gulp.task('modules', [], function() {
+gulp.task('modules', [], function () {
   var channels = makeChannelModulesContent();
   var libs = makeLibModulesContent();
   var tmpl = fs.readFileSync(__dirname + '/mods.js.tmpl', 'utf8');
@@ -75,39 +75,39 @@ gulp.task('modules', [], function() {
   console.log('Enabled channels: ' + channels.enabledChannels);
 });
 
-gulp.task('clean', function() {
+gulp.task('clean', function () {
   var paths = del.sync(distFiles);
   console.log('Deleted files and folders:\n' + paths.join('\n'));
 });
 
-gulp.task('test', [], function() {
+gulp.task('test', [], function () {
   var test = require('./test/test.js');
   test.run();
 });
 
-gulp.task('watch', ['build'], function() {
+gulp.task('watch', ['build'], function () {
   var watcher = gulp.watch(scriptSrcFiles, ['build']);
-  watcher.on('change', function(event) {
+  watcher.on('change', function (event) {
     console.log('File ' + event.path + ' was ' +
       event.type + ', running tasks...');
   });
 });
 
-var makeChannelModulesContent = function() {
+var makeChannelModulesContent = function () {
   var channelPool = fs.readdirSync(channelsDirPath, 'utf8');
-  var allChannels = _.map(channelPool, function(ch) {
+  var allChannels = _.map(channelPool, function (ch) {
     if (ch.substr(0, 1) == '.' || ch.substr(-3) != '.js') {
       return undefined;
     }
     return ch.substr(0, ch.length - 3);
   });
-  allChannels = _.remove(allChannels, function(ch) {
+  allChannels = _.remove(allChannels, function (ch) {
     return typeof ch != 'undefined';
   });
   var enabledChannels;
   if (hasOwn.call(cmdOptions, 'channels') && cmdOptions.channels.length > 0) {
     enabledChannels = _.split(cmdOptions.channels, /[\s,]+/);
-    _.forEach(enabledChannels, function(ch) {
+    _.forEach(enabledChannels, function (ch) {
       if (!_.includes(allChannels, ch)) {
         console.log('Channel ' + ch +
           ' is invalid. The channels you can use: ' + allChannels + '.');
@@ -115,7 +115,7 @@ var makeChannelModulesContent = function() {
       }
     });
   } else {
-    enabledChannels = _.remove(allChannels, function(ch) {
+    enabledChannels = _.remove(allChannels, function (ch) {
       return !_.includes(deprecatedChannels, ch);
     });
   }
@@ -131,7 +131,7 @@ var makeChannelModulesContent = function() {
   };
 };
 
-var makeLibModulesContent = function() {
+var makeLibModulesContent = function () {
   var extraBaseDir = './channels/extras/';
   var extranames = [];
   if (hasOwn.call(cmdOptions, 'alipay_in_weixin') &&
@@ -147,7 +147,7 @@ var makeLibModulesContent = function() {
   };
 };
 
-var modnames2text = function(modnames, baseDir) {
+var modnames2text = function (modnames, baseDir) {
   if (modnames.length === 0) {
     return '';
   }
