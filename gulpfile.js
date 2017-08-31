@@ -4,17 +4,18 @@ var gulp = require('gulp');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var uglify = require('gulp-uglify');
-var sourcemaps = require('gulp-sourcemaps');
+// var sourcemaps = require('gulp-sourcemaps');
 var gutil = require('gulp-util');
 var del = require('del');
 var fs = require('fs');
 var _ = require('lodash');
+var package = JSON.parse(fs.readFileSync('./package.json'));
 var hasOwn = {}.hasOwnProperty;
 
 var scriptSrcFiles = 'src/**/*.js';
 var destJsFile = 'pingpp.js';
 var entries = ['./src/main.js'];
-var distDir = './dist/';
+var distDir = '../zufutong-source/www/static/pingpp-js-' + package.version + '/';
 var distFiles = [distDir + '**/*.js', distDir + '**/*.js.map'];
 var releaseObjectName = 'pingpp';
 var channelsDir = './channels/';
@@ -45,9 +46,9 @@ gulp.task('build', ['clean', 'modules'], function () {
   return b.bundle()
     .pipe(source(destJsFile))
     .pipe(buffer())
-    .pipe(sourcemaps.init({
-      loadMaps: true
-    }))
+    // .pipe(sourcemaps.init({
+    //   loadMaps: true
+    // }))
     .pipe(uglify({
       mangle: {
         reserved: ['PingppSDK']
@@ -58,7 +59,7 @@ gulp.task('build', ['clean', 'modules'], function () {
       }
     }))
     .on('error', gutil.log)
-    .pipe(sourcemaps.write('./'))
+    // .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(distDir));
 });
 
@@ -77,7 +78,9 @@ gulp.task('modules', [], function () {
 });
 
 gulp.task('clean', function () {
-  var paths = del.sync(distFiles);
+  var paths = del.sync(distFiles, {
+    force: true
+  });
   console.log('Deleted files and folders:\n' + paths.join('\n'));
 });
 
